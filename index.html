@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Normalización de Base de Datos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px 40px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 85%;
+      max-width: 1400px;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 2.2em;
+    }
+    .course-info {
+      text-align: center;
+      padding: 20px;
+      margin: 0 auto 30px auto;
+      background: #f5f5f5;
+      border-radius: 8px;
+      max-width: 800px;
+    }
+    .course-info p {
+      margin: 5px 0;
+      color: #555;
+      font-size: 1.1em;
+    }
+    .course-info .authors {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin: 20px 0;
+    }
+    .course-info .author {
+      padding: 15px 25px;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      min-width: 200px;
+    }
+    .course-info .date {
+      font-style: italic;
+      color: #666;
+      font-size: 1em;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      background: #4caf50;
+      color: white;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: 0.3s;
+      min-width: 120px;
+    }
+    button:hover {
+      background: #43a047;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .content {
+      display: none;
+      margin-top: 30px;
+      padding: 25px;
+      background: #e8f5e9;
+      border-radius: 12px;
+      border: 1px solid #c8e6c9;
+    }
+    .active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      font-size: 1.1em;
+      margin: 0;
+      min-width: 800px; /* Asegura un ancho mínimo para tablas con muchas columnas */
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #4caf50;
+      color: white;
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    .table-container {
+      margin: 0 auto 30px auto;
+      max-width: 95%;
+    }
+    .table-container h3 {
+      color: #333;
+      font-size: 1.4em;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .explanation {
+      margin: 0 auto 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 95%;
+      text-align: center;
+      font-size: 1.1em;
+      line-height: 1.6;
+    }
+    /* Estilos para 2FN y 3FN */
+    .normalized-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+    }
+    .normalized-tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      width: 95%;
+      margin: 0 auto;
+      justify-items: center;
+    }
+    .normalized-table-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 350px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .normalized-table-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .normalized-table-container.note {
+      grid-column: 1 / -1;
+      max-width: 800px;
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .normalized-table-container.note .vertical-list li {
+      background: transparent;
+      border-left: none;
+      box-shadow: none;
+      text-align: justify;
+      line-height: 1.6;
+      color: #2e7d32;
+      font-size: 1.1em;
+    }
+    .table-title {
+      text-align: center;
+      color: #43a047;
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #43a047;
+      padding-bottom: 5px;
+      width: 100%;
+    }
+    .vertical-list {
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .vertical-list li {
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: white;
+      border-left: 3px solid #4caf50;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .normalized-form-title {
+      width: 100%;
+      text-align: center;
+      color: #2e7d32;
+      font-size: 1.3em;
+      margin: 20px 0;
+      padding: 15px;
+      background: #e8f5e9;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4caf50;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: background-color 0.3s;
+      vertical-align: middle;
+    }
+    .info-icon:hover {
+      background: #43a047;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+      padding: 5px;
+    }
+    .modal-close:hover {
+      color: #333;
+    }
+    .modal-title {
+      color: #2e7d32;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+    .modal-text {
+      line-height: 1.6;
+      color: #444;
+      text-align: justify;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Normalización de Base de Datos</h1>
+    <div class="course-info">
+      <p><strong>Materia:</strong> Arquitectura de Datos</p>
+      <div class="authors">
+        <div class="author">
+          <p><strong>Autor:</strong> Dorian Joseph Esguerra Perilla</p>
+          <p><strong>ID:</strong> 831244</p>
+        </div>
+        <div class="author">
+          <p><strong>Autor:</strong> Hery David Acosta Ladino</p>
+          <p><strong>ID:</strong> -----</p>
+        </div>
+      </div>
+      <p class="date">21 de agosto de 2025</p>
+    </div>
+    <div class="buttons">
+      <button onclick="showContent('original')">Tabla Original</button>
+      <button onclick="showContent('fn1')">1FN</button>
+      <button onclick="showContent('fn2')">2FN</button>
+      <button onclick="showContent('fn3')">3FN</button>
+      <button onclick="showContent('final')">Resultado Final BD</button>
+      <button onclick="showContent('info')">Información</button>
+    </div>
+
+    <div id="original" class="content">
+      <div class="explanation">
+        <p>Tabla original con los datos sin normalizar.</p>
+        <button class="green-button">La tabla Origen en la normalización sirve para evitar duplicidad de datos, garantizar consistencia, mejorar integridad referencial y facilitar mantenimiento al separar en una tabla independiente un atributo que se repite mucho en otra entidad.</button>
+      </div>
+      <div id="original-tables"></div>
+    </div>
+
+    <div id="fn1" class="content">
+      <div class="explanation">
+        <p>La Primera Forma Normal (1FN) establece que cada campo debe contener un único valor atómico y no debe haber grupos repetitivos. Aquí se han separado los campos compuestos en columnas individuales.</p>
+        <button class="green-button">La Primera Forma Normal (1NF) tiene como función eliminar la redundancia dentro de una misma tabla, asegurando que cada campo contenga un único valor (no valores repetidos ni multivaluados) y que cada registro sea único.</button>
+        <ul style="text-align:left; max-width:900px; margin:15px auto; line-height:1.6;">
+          <li><strong>Ejemplo (facturas):</strong> en esta versión 1FN solo guardamos <em>Factura_Tipo</em>. Los valores permitidos son <em>Electrónica</em> y <em>Física</em>. Si un cliente pide ambas, se atomiza creando una fila por cada tipo (misma información del cliente/producto, distinto Factura_Tipo).</li>
+        </ul>
+      </div>
+      <div id="fn1-tables"></div>
+    </div>
+
+    <div id="fn2" class="content">
+      <div class="explanation">
+        <p>La Segunda Forma Normal (2FN) requiere que la tabla esté en 1FN y que todos los atributos no clave sean completamente dependientes de la clave primaria.</p>
+        <button class="green-button">La Segunda Forma Normal (2NF) tiene como función eliminar la redundancia causada por dependencias parciales, es decir, que ningún atributo dependa solo de una parte de la clave primaria compuesta.</button>
+        <ul style="text-align:left; max-width:900px; margin:15px auto; line-height:1.6;">
+          <li>Separa las tablas que contienen datos que dependen solo de una parte de la clave compuesta.</li>
+          <li>Evita repetir información (por ejemplo, datos del proveedor repetidos en muchas filas de facturas).</li>
+        </ul>
+      </div>
+      <div id="fn2-tables"></div>
+    </div>
+
+    <div id="fn3" class="content">
+      <div class="explanation">
+        <p>La Tercera Forma Normal (3FN) requiere que la tabla esté en 2FN y que no existan dependencias transitivas entre los atributos no clave.</p>
+        <button class="green-button">La Tercera Forma Normal (3NF) elimina dependencias transitivas; cada campo no clave debe depender únicamente de la clave primaria.</button>
+        <ul style="text-align:left; max-width:900px; margin:15px auto; line-height:1.6;">
+          <li>Tras aplicar 3FN, la base de datos es más robusta ante actualizaciones, inserciones y eliminaciones.</li>
+          <li>Ejemplo práctico: datos de persona (cliente/vendedor) se unifican en una tabla <em>Persona</em> en vez de duplicarse en Cliente y Vendedor.</li>
+        </ul>
+      </div>
+      <div id="fn3-tables"></div>
+    </div>
+
+    <div id="final" class="content">
+      <button class="green-button">El diagrama representa un sistema de ventas en el que la entidad PERSONA centraliza los datos de clientes y vendedores, diferenciados por un atributo rol. Una persona puede realizar o atender una FACTURA, la cual a su vez se detalla en DETALLEFACTURA, donde se registran los productos vendidos, sus cantidades y precios unitarios. Los PRODUCTOS son suministrados por PROVEEDORES a través de la relación PROVEEDORPRODUCTO y se almacenan en ALMACENES, controlados mediante la tabla ALMACENPRODUCTO que indica qué producto y en qué cantidad está guardado. En conjunto, el modelo asegura la trazabilidad completa de la compra y venta de productos, desde su proveedor hasta la venta final al cliente.</button>
+      <img src="FOTODIAGRAMA.jpg" 
+     alt="Resultado Final" 
+     style="display: block; margin: 20px auto; max-width: 100%; height: auto;">
+
+    </div>
+
+    <div id="info" class="content">
+      <div class="explanation">
+        <h2>¿Qué es la normalización y por qué es importante?</h2>
+        <p style="text-align:justify; max-width:900px; margin:10px auto;">La normalización es un conjunto de reglas y pasos que nos ayudan a organizar la información en una base de datos para evitar repeticiones, errores y problemas al actualizar datos. Es como ordenar los libros en una biblioteca: cada libro tiene su sitio y no hay copias innecesarias que confundan al lector.</p>
+        <h3 style="margin-top:12px;">Beneficios principales</h3>
+        <ul style="text-align:left; max-width:900px; margin:12px auto; line-height:1.6;">
+          <li><strong>Menos redundancia:</strong> evitamos datos repetidos (por ejemplo, la dirección del proveedor no debe escribirse en cada factura).</li>
+          <li><strong>Integridad:</strong> es más fácil mantener datos correctos (si cambias un teléfono en un solo lugar, no queda información antigua en otros registros).</li>
+          <li><strong>Evitar anomalías:</strong> previene errores al insertar, actualizar o borrar información.</li>
+          <li><strong>Mejor mantenimiento:</strong> las bases de datos normalizadas son más fáciles de entender y modificar.</li>
+          <li><strong>Rendimiento razonable:</strong> en consultas complejas la normalización permite índices y joins limpios; aunque a veces hay que desnormalizar por rendimiento específico, eso se hace con criterio.</li>
+        </ul>
+        <h3 style="margin-top:12px;">Pasos sencillos para normalizar (resumen rápido)</h3>
+        <ol style="text-align:left; max-width:900px; margin:12px auto; line-height:1.6;">
+          <li>Identifica los grupos repetitivos o campos multivaluados (listas dentro de una celda).</li>
+          <li>Convierte esos valores en filas separadas o en tablas nuevas (1FN).</li>
+          <li>Si la tabla tiene clave compuesta, separa atributos que dependan solo de una parte (2FN).</li>
+          <li>Elimina dependencias transitivas moviendo atributos a tablas nuevas (3FN).</li>
+          <li>Verifica integridad referencial con claves primarias y foráneas.</li>
+        </ol>
+        <p style="text-align:justify; max-width:900px; margin:12px auto;">Si eres estudiante de secundaria: piensa en normalizar como ordenar tu cuaderno. Si tienes la misma información en varias páginas, te será difícil cambiarla bien después. Organizando por tema (tablas) y usando referencias (claves), todo queda claro y fácil de actualizar.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal para la información -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-title">Normalización de Tabla Persona</div>
+      <div class="modal-text">
+        Al unificar las tablas Cliente y Vendedor en una sola tabla Persona con campos booleanos Es_Cliente y Es_Vendedor, 
+        eliminamos la redundancia de datos. Una persona puede ser tanto cliente como vendedor sin necesidad de duplicar su 
+        información en dos tablas diferentes. Esta es una aplicación práctica de la Tercera Forma Normal, eliminando 
+        dependencias transitivas y mejorando la integridad de los datos.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Datos para las tablas de cada forma normal
+    const tableData = {
+      original: [
+        {
+          title: "Tabla Original - Almacén de Venta de Zapatos",
+          headers: ["Cliente", "Vendedor", "Producto", "Almacén", "Factura", "Proveedor"],
+          rows: [
+            ["Mario Luis", "Marco Polo", "Botas manchas", "Sede A", "Electrónica Física", "Payless"],
+            ["Camilo", "Sergio", "Zapatillas", "Sede B", "Física", "Adidas"],
+            ["Tulio", "Luna", "Botas Zapatos", "Sede A", "Electrónica", "Payless"],
+            ["Lina", "Sol", "Zapatos", "Sede B", "Física", "Adidas"]
+          ]
+        }
+      ],
+      fn1: [
+        {
+          title: "Primera Forma Normal - Almacén de Venta de Zapatos",
+          headers: [
+            "Cliente_Nombre",
+            "Cliente_Apellido",
+            "Vendedor_Nombre",
+            "Vendedor_Apellido",
+            "Producto_Nombre",
+            "Producto_Marca",
+            "Almacén_Sede",
+            "Factura_Tipo",
+            "Proveedor_Nombre"
+          ],
+          rows: [
+            ["Mario", "Luis", "Marco", "Polo", "Botas", "manchas", "Sede A", "Electrónica", "Payless"],
+            ["Mario", "Luis", "Marco", "Polo", "Botas", "manchas", "Sede A", "Física", "Payless"],
+            ["Camilo", "", "Sergio", "", "Zapatillas", "", "Sede B", "Física", "Adidas"],
+            ["Tulio", "", "Luna", "", "Botas", "Zapatos", "Sede A", "Electrónica", "Payless"],
+            ["Lina", "", "Sol", "", "Zapatos", "", "Sede B", "Física", "Adidas"]
+          ]
+        }
+      ],
+      fn2: [
+        {
+          type: "2FN",
+          tables: [
+            {
+              title: "Cliente",
+              headers: ["IdCliente", "P_Nombre", "P_Apellido", "Teléfono", "Dirección"],
+              rows: [["C001", "Mario", "Luis", "3001234567", "Calle 1 #23-45"]]
+            },
+            {
+              title: "Vendedor",
+              headers: ["IdVendedor", "P_Nombre", "P_Apellido", "Teléfono", "Dirección", "Correo"],
+              rows: [["V001", "Marco", "Polo", "3112345678", "Calle 12 #34-56", "marco@email.com"]]
+            },
+            {
+              title: "Productos",
+              headers: ["IdProductos", "Marca", "Color", "Talla", "Precio"],
+              rows: [["P001", "Botas manchas", "Negro", "40", "120000"]]
+            },
+            {
+              title: "Almacén",
+              headers: ["IdAlmacen", "Cantidad", "Disponibilidad", "IdProductos"],
+              rows: [["A001", "50", "Disponible", "P001"]]
+            },
+            {
+              title: "Proveedor",
+              headers: ["IdProveedor", "IdProductos", "Teléfono", "Correo", "Dirección"],
+              rows: [["PR001", "P001", "3991234567", "payless@email.com", "Zona Industrial 1"]]
+            },
+            {
+              title: "Factura",
+              headers: ["IdFactura", "NIT", "Dirección", "IdCliente", "IdVendedor", "IdProducto", "Fecha"],
+              rows: [["F001", "900123456", "Sede Principal", "C001", "V001", "P001", "2023-08-21"]]
+            }
+          ]
+        }
+      ],
+      fn3: [
+        {
+          type: "3FN",
+          tables: [
+            {
+              title: "Persona",
+              showInfo: true,
+              headers: [
+                "ID_persona",
+                "Nombres",
+                "Primer_Apellido",
+                "Segundo_Apellido",
+                "Correo",
+                "Teléfono",
+                "Dirección",
+                "Rol"
+              ]
+            },
+            {
+              title: "Producto",
+              headers: ["IdProducto", "Marca", "Color", "Talla", "Precio"],
+              rows: [["P001", "Botas manchas", "Negro", "40", "120000"]]
+            },
+            {
+              title: "Proveedor",
+              headers: ["IdProveedor", "Teléfono", "Correo", "Dirección"],
+              rows: [["PR001", "3991234567", "payless@email.com", "Zona Industrial 1"]]
+            },
+            {
+              title: "Almacén",
+              headers: ["IdAlmacen", "Cantidad", "IdProducto"],
+              rows: [["A001", "50", "P001"]]
+            },
+            {
+              title: "Factura",
+              headers: ["IdFactura", "IdCliente", "IdVendedor", "IdProducto", "Fecha"],
+              rows: [["F001", "C001", "V001", "P001", "2023-08-21"]]
+            },
+            {
+              title: "Factura Detalle",
+              headers: ["IdFactura", "IdProducto", "Cantidad", "Precio"],
+              rows: [["F001", "P001", "2", "120000"]]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Función para mostrar/ocultar el modal
+    function toggleModal() {
+      const modal = document.getElementById('infoModal');
+      modal.classList.toggle('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('infoModal');
+      modal.classList.remove('active');
+    }
+
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function(event) {
+      const modal = document.getElementById('infoModal');
+      if (event.target === modal) {
+        modal.classList.remove('active');
+      }
+    }
+
+    // Función para crear una tabla HTML
+    function createTable(tableInfo) {
+      if (tableInfo.type === "2FN" || tableInfo.type === "3FN") {
+        return `
+          <div class="normalized-section">
+            <div class="normalized-form-title">${tableInfo.type === "2FN" ? "Segunda" : "Tercera"} Forma Normal (${tableInfo.type})</div>
+            <div class="normalized-tables-grid">
+              ${tableInfo.tables.map(table => `
+                <div class="normalized-table-container">
+                  <div class="table-title">
+                    ${table.title}
+                    ${table.showInfo ? `<span class="info-icon" onclick="toggleModal()">i</span>` : ''}
+                  </div>
+                  <ul class="vertical-list">
+                    ${table.headers.map(header => `
+                      <li>${header}</li>
+                    `).join('')}
+                  </ul>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="table-container">
+            <h3>${tableInfo.title}</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>${tableInfo.headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                </thead>
+                <tbody>
+                  ${tableInfo.rows.map(row => 
+                    `<tr>${row.map(cell => `<td>${cell || ''}</td>`).join('')}</tr>`
+                  ).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Función para mostrar el contenido
+    function showContent(id) {
+      const sections = document.querySelectorAll('.content');
+      sections.forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(id);
+      if (!target) return;
+      target.classList.add('active');
+
+      // Renderizar tablas si es necesario (evita intentar renderizar cuando no hay datos)
+      if (id !== 'final' && tableData[id]) {
+        const tablesContainer = document.getElementById(id + '-tables');
+        if (tablesContainer) tablesContainer.innerHTML = tableData[id].map(table => createTable(table)).join('');
+      }
+    }
+
+    // Inicializar la primera vista
+    document.addEventListener('DOMContentLoaded', () => {
+      showContent('original');
+    });
+  </script>
+</body>
+</html>
+
