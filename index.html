@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Normalización de Base de Datos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Normalización de Base de Datos</h1>
+    <div class="course-info">
+      <p><strong>Materia:</strong> Arquitectura de Datos</p>
+      <div class="authors">
+        <div class="author">
+          <p><strong>Autor:</strong> Sujeto A</p>
+          <p><strong>NRC:</strong> 001</p>
+        </div>
+        <div class="author">
+          <p><strong>Autor:</strong> Sujeto B</p>
+          <p><strong>NRC:</strong> 002</p>
+        </div>
+      </div>
+      <p class="date">21 de agosto de 2025</p>
+    </div>
+    
+    <div class="button-section">
+      <div class="button-group-title">Normalización de Base de Datos</div>
+      <div class="button-group">
+        <button onclick="showContent('original')">Tabla Original</button>
+        <button onclick="showContent('fn1')">1FN</button>
+        <button onclick="showContent('fn2')">2FN</button>
+        <button onclick="showContent('fn3')">3FN</button>
+        <button onclick="showContent('final')">Resultado Final</button>
+      </div>
+      
+      <div class="button-group-title">Herramientas Adicionales</div>
+      <div class="button-group">
+        <button onclick="showContent('creacion')">Creación</button>
+        <button onclick="showContent('consultas')">Consultas</button>
+        <button onclick="showContent('extras')">Extras</button>
+      </div>
+    </div>
+
+    <div id="original" class="content">
+      <div class="explanation">
+        <p>Tabla original con los datos sin normalizar.</p>
+      </div>
+      <div id="original-tables"></div>
+    </div>
+
+    <div id="fn1" class="content">
+      <div class="explanation">
+        <p>La Primera Forma Normal (1FN) establece que cada campo debe contener un único valor atómico y no debe haber grupos repetitivos. Aquí se han separado los campos compuestos en columnas individuales.</p>
+      </div>
+      <div id="fn1-tables"></div>
+    </div>
+    
+    <div id="fn2" class="content">
+      <div class="explanation">
+        <p>La Segunda Forma Normal (2FN) requiere que la tabla esté en 1FN y que todos los atributos no clave sean completamente dependientes de la clave primaria.</p>
+      </div>
+      <div id="fn2-tables"></div>
+    </div>
+    
+    <div id="fn3" class="content">
+      <div class="explanation">
+        <p>La Tercera Forma Normal (3FN) requiere que la tabla esté en 2FN y que no existan dependencias transitivas entre los atributos no clave.</p>
+      </div>
+      <div id="fn3-tables"></div>
+    </div>
+    
+    <div id="final" class="content">
+      <img src="images/FOTODIAGRAMA.jpg" alt="Resultado Final" style="max-width: 100%; height: auto;">
+    </div>
+    
+    <div id="creacion" class="content">
+      <div class="explanation">
+        <p>Proceso de Creación de Base de Datos - Pasos para crear la base de datos y las tablas del sistema de almacén de zapatos.</p>
+      </div>
+      <div class="image-gallery">
+        <div class="image-container">
+          <h3>1. Crear Base de Datos</h3>
+          <img src="images/crear.png" alt="Crear Base de Datos" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+        </div>
+        
+        <div class="image-container">
+          <h3>2. Crear Tablas - Parte 1</h3>
+          <img src="images/tablas1.png" alt="Crear Tablas 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+        </div>
+        
+        <div class="image-container">
+          <h3>3. Crear Tablas - Parte 2</h3>
+          <img src="images/tablas2.png" alt="Crear Tablas 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+        </div>
+        
+        <div class="image-container">
+          <h3>4. Insertar Datos - Parte 1</h3>
+          <img src="images/datos1.png" alt="Insertar Datos 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+        </div>
+        
+        <div class="image-container">
+          <h3>5. Insertar Datos - Parte 2</h3>
+          <img src="images/datos2.png" alt="Insertar Datos 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+        </div>
+      </div>
+      <div id="creacion-tables"></div>
+    </div>
+    
+    <div id="consultas" class="content">
+      <div class="explanation">
+        <p>Ejemplos de Consultas SQL - Diferentes tipos de consultas para interactuar con la base de datos normalizada.</p>
+      </div>
+      
+      <div class="query-section">
+        <h2 class="query-section-title">Consultas Simples</h2>
+        <div class="image-gallery">
+          <div class="image-container">
+            <h3>1. Consulta de Personas</h3>
+            <img src="images/persona.png" alt="Consulta Persona" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>2. Detalles de Producto</h3>
+            <img src="images/detallesproducto.png" alt="Detalles Producto" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>3. Cliente por Nombre</h3>
+            <img src="images/cleintepornombre.png" alt="Cliente por Nombre" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+        </div>
+      </div>
+      
+      <div class="query-section">
+        <h2 class="query-section-title">Consultas Intermedias</h2>
+        <div class="image-gallery">
+          <div class="image-container">
+            <h3>1. Factura Cliente - Parte 1</h3>
+            <img src="images/facturacliente1.png" alt="Factura Cliente 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>2. Factura Cliente - Parte 2</h3>
+            <img src="images/facturacliente2.png" alt="Factura Cliente 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>3. Detalle Factura - Parte 1</h3>
+            <img src="images/detallefactura1.png" alt="Detalle Factura 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>4. Detalle Factura - Parte 2</h3>
+            <img src="images/detallefactura2.png" alt="Detalle Factura 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+        </div>
+      </div>
+      
+      <div class="query-section">
+        <h2 class="query-section-title">Consultas Avanzadas</h2>
+        <div class="image-gallery">
+          <div class="image-container">
+            <h3>1. Total Ventas - Parte 1</h3>
+            <img src="images/totalventas1.png" alt="Total Ventas 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>2. Total Ventas - Parte 2</h3>
+            <img src="images/totalventas2.png" alt="Total Ventas 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>3. Más Vendido - Parte 1</h3>
+            <img src="images/masvendido1.png" alt="Más Vendido 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>4. Más Vendido - Parte 2</h3>
+            <img src="images/masvendido2.png" alt="Más Vendido 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>5. Mayor Gasto - Parte 1</h3>
+            <img src="images/mayorgasto1.png" alt="Mayor Gasto 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>6. Mayor Gasto - Parte 2</h3>
+            <img src="images/mayorgasto2.png" alt="Mayor Gasto 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>7. Stock Después de Venta - Parte 1</h3>
+            <img src="images/stockdespuesdeventa1.png" alt="Stock Después de Venta 1" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+          
+          <div class="image-container">
+            <h3>8. Stock Después de Venta - Parte 2</h3>
+            <img src="images/stockdespuesdeventa2.png" alt="Stock Después de Venta 2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+          </div>
+        </div>
+      </div>
+      
+      <div id="consultas-tables"></div>
+    </div>
+    
+    <div id="extras" class="content">
+      <div class="explanation">
+        <p>Sección de Extras - Recursos adicionales y material complementario del proyecto.</p>
+      </div>
+      <div class="image-gallery">
+        <div class="image-container">
+          <h3>1. Extra - Recurso 1</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra1.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>2. Extra - Recurso 2</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra2.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>3. Extra - Recurso 3</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra3.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>4. Extra - Recurso 4</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra4.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>5. Extra - Recurso 5</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra5.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>6. Extra - Recurso 6</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra6.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>7. Extra - Recurso 7</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra7.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>8. Extra - Recurso 8</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra8.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>9. Extra - Recurso 9</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra9.png</small>
+          </div>
+        </div>
+        
+        <div class="image-container">
+          <h3>10. Extra - Recurso 10</h3>
+          <div class="placeholder-image">
+            <p>Imagen próximamente disponible</p>
+            <small>extra10.png</small>
+          </div>
+        </div>
+      </div>
+      <div id="extras-tables"></div>
+    </div>
+  </div>
+
+  <!-- Modal para la información -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-title">Normalización de Tabla Persona</div>
+      <div class="modal-text">
+        Al unificar las tablas Cliente y Vendedor en una sola tabla Persona con campos booleanos Es_Cliente y Es_Vendedor, 
+        eliminamos la redundancia de datos. Una persona puede ser tanto cliente como vendedor sin necesidad de duplicar su 
+        información en dos tablas diferentes. Esta es una aplicación práctica de la Tercera Forma Normal, eliminando 
+        dependencias transitivas y mejorando la integridad de los datos.
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
